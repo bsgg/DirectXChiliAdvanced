@@ -142,7 +142,7 @@ void Game::ComposeFrame()
 
 	// intersects (b)
 	float b0 = v2.x - (m0 * v2.y);
-	float b1 = v2.x - (m1 * v2.y);
+	float b1 = v2.x - (m1 * v2.y); 
 
 	//gfx.DrawFlatTriangle(v0.y, v2.y, m0, b0, m1, b1, BLUE);
 

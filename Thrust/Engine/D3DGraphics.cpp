@@ -287,6 +287,41 @@ void D3DGraphics::DrawCircle( int centerX,int centerY,int radius,D3DCOLOR color 
 
 void D3DGraphics::DrawTriangle(Vec2 v0, Vec2 v1, Vec2 v2, D3DCOLOR c)
 {
+	// Sort vertices, to have v0 v1 and v2 from top to bottom
+	if (v1.y < v0.y) { v0.Swap(v1); }
+	if (v2.y < v1.y) { v1.Swap(v2); }
+	if (v1.y < v0.y) { v0.Swap(v1); }
+
+	// Check if if a top flat or bottom flat or anything else
+	if (v0.y == v1.y)
+	{
+		// Draw flat top triangle
+	}
+	else if (v1.y == v2.y)
+	{
+		// Draw flat bottom triangle
+	}
+	else
+	{
+		// General triangle
+		const float m0 = (v0.x - v1.x) / (v0.y - v1.y);
+		const float m1 = (v0.x - v2.x) / (v0.y - v2.y);
+		const float m2 = (v1.x - v2.x) / (v1.y - v2.y);
+
+		float b0 = v0.x - (m0 * v0.y);
+		float b1 = v0.x - (m1 * v0.y);
+		float b2 = v1.x - (m2 * v1.y);
+
+		// Gets intersect point for the half
+		const float qx = m1 * v1.y + b1;
+
+		// Major left
+		if (qx < v1.x)
+		{
+
+		}
+	}
+
 }
 
 void D3DGraphics::DrawFlatTriangle(float y0, float y1, float m0, float b0, float m1, float b1, D3DCOLOR c)
