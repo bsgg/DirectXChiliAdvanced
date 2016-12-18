@@ -46,7 +46,7 @@ public:
 		DrawCircle((int)center.x, (int)center.y, radius, c);
 	}
 	void DrawCircle( int centerX,int centerY,int radius,D3DCOLOR c );
-	void DrawTriangle(Vec2 v0, Vec2 v1, Vec2 v2, D3DCOLOR c);
+	void DrawTriangle(Vec2 v0, Vec2 v1, Vec2 v2, const RectI& clip, D3DCOLOR c);
 	
 
 	void BeginFrame();
@@ -63,7 +63,7 @@ private:
 	// Draw a triangle with the bottom or the top flat (y0 == y1)
 	// yStart, yEnd: points in the triangle between the flat part and the other point
 	// m0, m1 = slope
-	void DrawFlatTriangle(float y0, float y1, float m0, float b0, float m1, float b1, D3DCOLOR c);
+	void DrawFlatTriangle(float y0, float y1, float m0, float b0, float m1, float b1, const RectI& clip, D3DCOLOR c);
 public:
 	static const unsigned int	SCREENWIDTH =	800;
 	static const unsigned int	SCREENHEIGHT =	600;

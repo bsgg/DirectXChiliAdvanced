@@ -285,7 +285,7 @@ void D3DGraphics::DrawCircle( int centerX,int centerY,int radius,D3DCOLOR color 
 	}
 }
 
-void D3DGraphics::DrawTriangle(Vec2 v0, Vec2 v1, Vec2 v2, D3DCOLOR c)
+void D3DGraphics::DrawTriangle(Vec2 v0, Vec2 v1, Vec2 v2, const RectI& clip, D3DCOLOR c)
 {
 	// Sort vertices, to have v0 v1 and v2 from top to bottom
 	if (v1.y < v0.y) { v0.Swap(v1); }
@@ -296,10 +296,25 @@ void D3DGraphics::DrawTriangle(Vec2 v0, Vec2 v1, Vec2 v2, D3DCOLOR c)
 	if (v0.y == v1.y)
 	{
 		// Draw flat top triangle
+		if (v1.x < v0.x) v0.Swap(v1);
+
+		const float m1 = (v0.x - v2.x) / (v0.y - v2.y);
+		const float m2 = (v1.x - v2.x) / (v1.y - v2.y);
+		float b1 = v0.x - (m1 * v0.y);
+		float b2 = v1.x - (m2 * v1.y);
+		DrawFlatTriangle(v1.y, v2.y, m1, b1, m2, b2, clip, c);
+
 	}
 	else if (v1.y == v2.y)
 	{
 		// Draw flat bottom triangle
+		if (v2.x < v1.x) v1.Swap(v2);
+
+		const float m0 = (v0.x - v1.x) / (v0.y - v1.y);
+		const float m1 = (v0.x - v2.x) / (v0.y - v2.y);
+		float b0 = v0.x - (m0 * v0.y);
+		float b1 = v0.x - (m1 * v0.y);
+		DrawFlatTriangle(v0.y, v1.y, m0, b0, m1, b1, clip, c);
 	}
 	else
 	{
@@ -312,29 +327,37 @@ void D3DGraphics::DrawTriangle(Vec2 v0, Vec2 v1, Vec2 v2, D3DCOLOR c)
 		float b1 = v0.x - (m1 * v0.y);
 		float b2 = v1.x - (m2 * v1.y);
 
-		// Gets intersect point for the half
+		// Gets intersect point for the half, to split the triangles
 		const float qx = m1 * v1.y + b1;
 
 		// Major left
 		if (qx < v1.x)
 		{
-
+			// Draw two triangles until midle part, and then the bottom
+			DrawFlatTriangle(v0.y, v1.y, m1, b1, m0, b0, clip, c);
+			DrawFlatTriangle(v1.y, v2.y, m1, b1, m2, b2, clip, c);
+		}
+		else
+		{
+			// Mayor right triangle
+			DrawFlatTriangle(v0.y, v1.y, m0, b0, m1, b1, clip, c);
+			DrawFlatTriangle(v1.y, v2.y, m2, b2, m1, b1, clip, c);
 		}
 	}
 
 }
 
-void D3DGraphics::DrawFlatTriangle(float y0, float y1, float m0, float b0, float m1, float b1, D3DCOLOR c)
+void D3DGraphics::DrawFlatTriangle(float y0, float y1, float m0, float b0, float m1, float b1, const RectI& clip, D3DCOLOR c)
 {
 	// Fillig top left rule (from the bottom to the top)
 	// y0 and y1 will be rounded to the nearest integer  y0 = 2.3 -> y0 + 0.5 = 2.7 -> int will be 3 and so on
-	const int yStart = (int)(y0 + 0.5f);
-	const int yEnd = (int)(y1+0.5f);
+	const int yStart = max( (int)(y0 + 0.5f) , clip.top);
+	const int yEnd = min( (int)(y1+0.5f), clip.bottom  +1);
 	for (int y = yStart; y < yEnd; y++)
 	{
 		// Calculate the xStart and xEnd (through the slopes) and round to the nearest
-		const int xStart = int(m0 * (float(y) + 0.5) + b0 + 0.5f);
-		const int xEnd   = int(m1 * (float(y) + 0.5) + b1 + 0.5f);
+		const int xStart = max( int(m0 * (float(y) + 0.5) + b0 + 0.5f), clip.left);
+		const int xEnd   = min( int(m1 * (float(y) + 0.5) + b1 + 0.5f), clip.right + 1);
 
 		for (int x= xStart; x < xEnd; x++)
 		{
