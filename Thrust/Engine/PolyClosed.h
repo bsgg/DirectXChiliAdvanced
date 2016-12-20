@@ -133,7 +133,7 @@ public:
 
 				// The normal of those two points is the vector, rotate 90 degrees in clockwise direction 
 				// and then	we need to normalize everthing.
-				const Vec2 lineNormal = (current - prev).CCW90().Normalize();
+				const Vec2 lineNormal = (current - prev).CW90().Normalize();
 
 				// Check the the dot prodcut between objVel and lineNormal
 				// If it's negative, obj is aproaching to the line, 

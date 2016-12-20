@@ -57,14 +57,14 @@ public:
 		y /= length;
 		return *this;
 	}
-	inline _Vec2&	CW90()
+	inline _Vec2&	CCW90()
 	{
 		T temp = y;
 		y = -x;
 		x = temp;
 		return *this;
 	}
-	inline _Vec2&	CCW90()
+	inline _Vec2&	CW90()
 	{		
 		T temp = y;
 		y = x;
