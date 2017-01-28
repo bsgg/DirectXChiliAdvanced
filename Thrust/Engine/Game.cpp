@@ -131,7 +131,7 @@ void Game::ComposeFrame()
 
 
 	// Test triangle
-	Vec2 m = { (float)mouse.GetMouseX(), (float)mouse.GetMouseY()};
+	/*Vec2 m = { (float)mouse.GetMouseX(), (float)mouse.GetMouseY()};
 	Vec2 v0 = { 50.0f,50.0f };
 	Vec2 v1 = { 750.0f,50.0f };
 	Vec2 v2 = { 50.0f,550.0f };
@@ -141,13 +141,13 @@ void Game::ComposeFrame()
 	gfx.DrawTriangle(v0, m, v2, clip, BLUE);
 	gfx.DrawTriangle(v0, v1, m, clip, RED);
 	gfx.DrawTriangle(v1, v3, m, clip, GREEN);
-	gfx.DrawTriangle(v2, v3, m, clip, PURPLE);
+	gfx.DrawTriangle(v2, v3, m, clip, PURPLE);*/
 
 
 	// Focus the ship (move the camera where the ship is)
-	/*ship.FocusOn(cam);
+	ship.FocusOn(cam);
 
 	// Draw camera
 	cam.Draw(map.GetDrawable());
-	cam.Draw(ship.GetDrawable());	*/
+	cam.Draw(ship.GetDrawable());	
 }

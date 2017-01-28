@@ -10,6 +10,7 @@
 #include "CollidableCircle.h"
 #include <vector>
 #include <memory>
+#include <algorithm>
 
 
 class PolyClosed
@@ -103,13 +104,19 @@ public:
 		vertices(vList),
 		color (color)
 		
-	{}
+	{
+		// Make the vertices clockwise
+		MakeClockWise();	
+	}
 	PolyClosed(std::string filename, D3DCOLOR color = WHITE)
 		:
 		// instead of copy a vector from 1 to this one, just move it, it´s faster and better
 		vertices( Loader(filename) ),
 		color(color)
-	{}
+	{
+		// Make the vertices clockwise
+		MakeClockWise();
+	}
 	void HandleCollision(CollidableCircle& obj)
 	{
 		// Circle elements
@@ -204,6 +211,37 @@ public:
 	{
 		return Drawable(*this);
 	}
+
+
+private:
+	// Evaluates if the poligon is clockwise or not
+	bool IsClockwiseWinding() const
+	{
+		float area = 0.0f;
+
+		// Check all the vertices in the poligon
+		Vec2 previous = vertices.back();
+		for (auto i = vertices.begin(), end = vertices.end(); i != end; i++)
+		{
+			const Vec2 current = *i;
+
+			// Calculate the area with all the vertices
+			area += (current.x - previous.x) * (current.y + previous.y);
+			previous = current;
+		};
+
+		return area <= 0.0f;
+	}
+
+	void MakeClockWise()
+	{
+		// If not cw, reverse all the vertices
+		if (!IsClockwiseWinding())
+		{
+			std::reverse(this->vertices.begin(), this->vertices.end());
+		}
+	}
+
 private:
 	D3DCOLOR color;
 	std::vector<Vec2> vertices;
