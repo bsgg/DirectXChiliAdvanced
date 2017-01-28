@@ -20,6 +20,8 @@
  ******************************************************************************************/
 #include "Game.h"
 #include "Mat3.h"
+#include "TriangleStrip.h"
+
 
 Game::Game( HWND hWnd,KeyboardServer& kServer,MouseServer& mServer )
 :	gfx( hWnd ),
@@ -143,11 +145,18 @@ void Game::ComposeFrame()
 	gfx.DrawTriangle(v1, v3, m, clip, GREEN);
 	gfx.DrawTriangle(v2, v3, m, clip, PURPLE);*/
 
-
+	/*
+	// Ship game
 	// Focus the ship (move the camera where the ship is)
 	ship.FocusOn(cam);
 
 	// Draw camera
 	cam.Draw(map.GetDrawable());
-	cam.Draw(ship.GetDrawable());	
+	cam.Draw(ship.GetDrawable());	*/
+
+
+	// Test triangle list
+	TriangleStrip strip({ {0.0f, 0.0f}, {100.0f,0.0f}, {50.0f, 50.0f}, {200.0f,200.0f}, {100.0f,400.0f} });
+	view.Draw(strip.GetDrawable());
+
 }

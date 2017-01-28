@@ -112,6 +112,7 @@
     <ClInclude Include="Ship.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="Timer.h" />
+    <ClInclude Include="TriangleStrip.h" />
     <ClInclude Include="Vec2.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Viewport.h" />
