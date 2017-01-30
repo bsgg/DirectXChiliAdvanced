@@ -39,6 +39,12 @@ public:
 		vertices(vList),
 		color(color)
 	{}
+
+	TriangleStrip(std::vector<const Vec2>&& movable, D3DCOLOR color = WHITE)
+		:
+		vertices(movable),
+		color(color)
+	{}
 	
 	// Gets the drawable internal class
 	Drawable GetDrawable() const
