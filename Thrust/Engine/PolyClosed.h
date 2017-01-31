@@ -216,16 +216,18 @@ public:
 	{
 		std::vector< const Vec2 > strip;
 
-		auto prev = vertices.back();
 		// Get all the vertices from the beginning to almost the end
 		// End is a special case
-		for (auto i = vertices.begin(), end = vertices.end() - 1; i != end; i++)
+		for (auto i = vertices.begin(), end = vertices.end() - 2; i != end; i++)
 		{
+			// Push the next one
+			strip.push_back( *(i + 1));
+
 			// Get the normal from current to prev vertices
-			const Vec2 normal0 = (*i - prev).CCW90().Normalize();
+			const Vec2 normal0 = (*(i+1) - *(i+0)).CCW90().Normalize();
 
 			// Get the normal from next curret to current vertices
-			const Vec2 normal1 = (*(i + 1) - *i).CCW90().Normalize();
+			const Vec2 normal1 = (*(i + 1) - *(i + 1)).CCW90().Normalize();
 
 			// Get normal between these two normals
 			const Vec2 b = (normal0 + normal1).Normalize();
@@ -233,10 +235,56 @@ public:
 			const float k = b* normal0;
 
 			// Vector 2 q, perpendicular to current vertex (between prev vertex and next vertex)
-			const Vec2 q = (*i) + (b * k);
+			const Vec2 q = *(i+1) + (b * k);
 
-			
+			// Push back q, the outside vertex between prev and current
+			strip.push_back(q);
+		}
 
+		// 4, 5
+		{
+			// Push the next one
+			strip.push_back(vertices.back());
+
+			// Get the normal from current to prev vertices
+			const Vec2 normal0 = (vertices.back() - *(vertices.end() - 2)).CCW90().Normalize();
+
+			// Get the normal from next curret to current vertices
+			const Vec2 normal1 = (vertices.front() - vertices.back()).CCW90().Normalize();
+
+			// Get normal between these two normals
+			const Vec2 b = (normal0 + normal1).Normalize();
+
+			const float k = b* normal0;
+
+			// Vector 2 q, perpendicular to current vertex (between prev vertex and next vertex)
+			const Vec2 q = vertices.back() + (b * k);
+
+			// Push back q, the outside vertex between prev and current
+			strip.push_back(q);
+		}
+
+		// 6,7 (last 2)
+		{
+			// Push the next one
+			strip.push_back(vertices.front());
+
+			// Get the normal from current to prev vertices
+			const Vec2 normal0 = (vertices.front() - vertices.back()).CCW90().Normalize();
+
+			// Get the normal from next curret to current vertices
+			const Vec2 normal1 = (*(vertices.begin() + 1) - vertices.front()).CCW90().Normalize();
+
+			// Get normal between these two normals
+			const Vec2 b = (normal0 + normal1).Normalize();
+
+			const float k = b* normal0;
+
+			// Vector 2 q, perpendicular to current vertex (between prev vertex and next vertex)
+			const Vec2 q = vertices.front() + (b * k);
+
+			// Push back q, the outside vertex between prev and current
+			strip.push_back(q);
 		}
 	}
 
