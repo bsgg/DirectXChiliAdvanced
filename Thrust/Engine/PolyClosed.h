@@ -232,7 +232,7 @@ public:
 			// Get normal between these two normals
 			const Vec2 b = (normal0 + normal1).Normalize();
 
-			const float k = b* normal0;
+			const float k = width /(b* normal0);
 
 			// Vector 2 q, perpendicular to current vertex (between prev vertex and next vertex)
 			const Vec2 q = *(i+1) + (b * k);
@@ -255,7 +255,7 @@ public:
 			// Get normal between these two normals
 			const Vec2 b = (normal0 + normal1).Normalize();
 
-			const float k = b* normal0;
+			const float k = width / (b* normal0);
 
 			// Vector 2 q, perpendicular to current vertex (between prev vertex and next vertex)
 			const Vec2 q = vertices.back() + (b * k);
@@ -278,7 +278,7 @@ public:
 			// Get normal between these two normals
 			const Vec2 b = (normal0 + normal1).Normalize();
 
-			const float k = b* normal0;
+			const float k = width / (b* normal0);
 
 			// Vector 2 q, perpendicular to current vertex (between prev vertex and next vertex)
 			const Vec2 q = vertices.front() + (b * k);
