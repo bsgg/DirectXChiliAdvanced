@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Ship.h"
+#include "TriangleStrip.h"
 
 class Map
 {
@@ -8,10 +9,11 @@ class Map
 public:
 	Map(std::string filename)
 		:
-		model(filename)
+		boundaries(filename),
+		model(boundaries.ExtractStripVertices(wallWidth))
 	{}
 
-	PolyClosed::Drawable GetDrawable() const
+	TriangleStrip::Drawable GetDrawable() const
 	{
 		return model.GetDrawable();
 
@@ -26,11 +28,12 @@ public:
 
 	void HandleCollision(CollidableCircle& object)
 	{
-		model.HandleCollision(object);
+		boundaries.HandleCollision(object);
 	}
 
 private:
-
-	PolyClosed model;
+	const float wallWidth = 40.0f;
+	PolyClosed boundaries;
+	TriangleStrip model;
 
 };
