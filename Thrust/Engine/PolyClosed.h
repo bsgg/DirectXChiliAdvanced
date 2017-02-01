@@ -212,9 +212,9 @@ public:
 		return Drawable(*this);
 	}
 
-	std::vector<const Vec2 > ExtractStripVertices(float width) const
+	std::vector<Vec2 > ExtractStripVertices(float width) const
 	{
-		std::vector< const Vec2 > strip;
+		std::vector<  Vec2 > strip;
 
 		// Get all the vertices from the beginning to almost the end
 		// End is a special case
@@ -227,7 +227,7 @@ public:
 			const Vec2 normal0 = (*(i+1) - *(i+0)).CCW90().Normalize();
 
 			// Get the normal from next curret to current vertices
-			const Vec2 normal1 = (*(i + 1) - *(i + 1)).CCW90().Normalize();
+			const Vec2 normal1 = (*(i + 2) - *(i + 1)).CCW90().Normalize();
 
 			// Get normal between these two normals
 			const Vec2 b = (normal0 + normal1).Normalize();
@@ -286,6 +286,12 @@ public:
 			// Push back q, the outside vertex between prev and current
 			strip.push_back(q);
 		}
+
+		// Push the first 2 elements
+		strip.push_back(strip[0]);
+		strip.push_back(strip[1]);
+
+		return strip;
 	}
 
 
