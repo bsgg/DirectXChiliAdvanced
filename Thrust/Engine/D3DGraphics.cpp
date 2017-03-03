@@ -51,7 +51,7 @@ pSysBuffer( NULL )
 	result = pDevice->GetBackBuffer( 0,0,D3DBACKBUFFER_TYPE_MONO,&pBackBuffer );
 	assert( !FAILED( result ) );
 
-	pSysBuffer = new D3DCOLOR[ SCREENWIDTH * SCREENHEIGHT ];
+	pSysBuffer = new Color[ SCREENWIDTH * SCREENHEIGHT ];
 }
 
 D3DGraphics::~D3DGraphics()
@@ -80,7 +80,7 @@ D3DGraphics::~D3DGraphics()
 
 void D3DGraphics::BeginFrame()
 {
-	memset( pSysBuffer,FILLVALUE,sizeof(D3DCOLOR)* SCREENWIDTH * SCREENHEIGHT );
+	memset( pSysBuffer,FILLVALUE,sizeof(Color)* SCREENWIDTH * SCREENHEIGHT );
 }
 
 void D3DGraphics::EndFrame()
@@ -93,7 +93,7 @@ void D3DGraphics::EndFrame()
 
 	for( int y = 0; y < SCREENHEIGHT; y++ )
 	{
-		memcpy( &((BYTE*)backRect.pBits)[backRect.Pitch * y],&pSysBuffer[SCREENWIDTH * y],sizeof(D3DCOLOR)* SCREENWIDTH );
+		memcpy( &((BYTE*)backRect.pBits)[backRect.Pitch * y],&pSysBuffer[SCREENWIDTH * y],sizeof(Color)* SCREENWIDTH );
 	}
 
 	result = pBackBuffer->UnlockRect( );
@@ -103,7 +103,7 @@ void D3DGraphics::EndFrame()
 	assert( !FAILED( result ) );
 }
 
-void D3DGraphics::PutPixel( int x,int y,D3DCOLOR c )
+void D3DGraphics::PutPixel( int x,int y,Color c )
 {	
 	assert( x >= 0 );
 	assert( y >= 0 );
@@ -112,7 +112,7 @@ void D3DGraphics::PutPixel( int x,int y,D3DCOLOR c )
 	pSysBuffer[ x + SCREENWIDTH * y ] = c;
 }
 
-D3DCOLOR D3DGraphics::GetPixel( int x,int y ) const
+Color D3DGraphics::GetPixel( int x,int y ) const
 {
 	assert( x >= 0 );
 	assert( y >= 0 );
@@ -121,7 +121,7 @@ D3DCOLOR D3DGraphics::GetPixel( int x,int y ) const
 	return pSysBuffer[ x + SCREENWIDTH * y ];
 }
 
-void D3DGraphics::DrawLine( int x1,int y1,int x2,int y2,D3DCOLOR c )
+void D3DGraphics::DrawLine( int x1,int y1,int x2,int y2,Color c )
 {	
 	const int dx = x2 - x1;
 	const int dy = y2 - y1;
@@ -175,7 +175,7 @@ void D3DGraphics::DrawLine( int x1,int y1,int x2,int y2,D3DCOLOR c )
 // Cohen–Sutherland clipping algorithm clips a line from
 // P0 = (x0, y0) to P1 = (x1, y1) against a rectangle with 
 // diagonal from (clip.left, clip.top) to (clip.right, clip.bottom).
-void D3DGraphics::DrawLineClip(Vec2 p0, Vec2 p1, D3DCOLOR c,const RectF& clip)
+void D3DGraphics::DrawLineClip(Vec2 p0, Vec2 p1, Color c,const RectF& clip)
 {
 	enum OutCode
 	{
@@ -267,7 +267,7 @@ void D3DGraphics::DrawLineClip(Vec2 p0, Vec2 p1, D3DCOLOR c,const RectF& clip)
 }
 
 
-void D3DGraphics::DrawCircle( int centerX,int centerY,int radius,D3DCOLOR color )
+void D3DGraphics::DrawCircle( int centerX,int centerY,int radius,Color color )
 {
 	int rSquared = sq( radius );
 	int xPivot = (int)( radius * 0.70710678118f + 0.5f );
@@ -285,7 +285,7 @@ void D3DGraphics::DrawCircle( int centerX,int centerY,int radius,D3DCOLOR color 
 	}
 }
 
-void D3DGraphics::DrawTriangle(Vec2 v0, Vec2 v1, Vec2 v2, const RectI& clip, D3DCOLOR c)
+void D3DGraphics::DrawTriangle(Vec2 v0, Vec2 v1, Vec2 v2, const RectI& clip, Color c)
 {
 	// Sort vertices, to have v0 v1 and v2 from top to bottom
 	if (v1.y < v0.y) { v0.Swap(v1); }
@@ -347,7 +347,7 @@ void D3DGraphics::DrawTriangle(Vec2 v0, Vec2 v1, Vec2 v2, const RectI& clip, D3D
 
 }
 
-void D3DGraphics::DrawFlatTriangle(float y0, float y1, float m0, float b0, float m1, float b1, const RectI& clip, D3DCOLOR c)
+void D3DGraphics::DrawFlatTriangle(float y0, float y1, float m0, float b0, float m1, float b1, const RectI& clip, Color c)
 {
 	// Fillig top left rule (from the bottom to the top)
 	// y0 and y1 will be rounded to the nearest integer  y0 = 2.3 -> y0 + 0.5 = 2.7 -> int will be 3 and so on

@@ -34,13 +34,13 @@ public:
 	};
 
 public:
-	/*TriangleStrip(std::initializer_list<Vec2> vList, D3DCOLOR color = WHITE)
+	/*TriangleStrip(std::initializer_list<Vec2> vList, Color color = WHITE)
 		:
 		vertices(vList),
 		color(color)
 	{}*/
 
-	TriangleStrip(std::vector<Vec2>&& movable, D3DCOLOR color = WHITE)
+	TriangleStrip(std::vector<Vec2>&& movable, Color color = WHITE)
 		:
 		vertices(movable),
 		color(color)
@@ -53,7 +53,7 @@ public:
 	}
 
 private:
-	D3DCOLOR color;
+	Color color;
 	std::vector<Vec2> vertices;
 
 };

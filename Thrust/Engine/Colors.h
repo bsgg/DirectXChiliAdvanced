@@ -16,26 +16,26 @@ public:
 		};
 	};
 public:
-	Color( )
+	Color()
 	{}
-	Color( D3DCOLOR c )
+	Color(D3DCOLOR c)
 		:
-		c( c )
+		c(c)
 	{}
-	Color( unsigned char r,unsigned char g,unsigned char b )
+	Color(unsigned char r, unsigned char g, unsigned char b)
 		:
-		Color( 255,r,g,b )
+		Color(255, r, g, b)
 	{}
-	Color( unsigned char x,unsigned char r,unsigned char g,unsigned char b )
+	Color(unsigned char x, unsigned char r, unsigned char g, unsigned char b)
 		:
-		r( r ),g( g ),b( b ),x( x )
+		r(r), g(g), b(b), x(x)
 	{}
 	Color& operator =(D3DCOLOR c)
 	{
 		this->c = c;
 		return *this;
 	}
-	operator D3DCOLOR( ) const
+	operator D3DCOLOR() const
 	{
 		return c;
 	}

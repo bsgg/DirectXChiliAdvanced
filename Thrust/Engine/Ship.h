@@ -147,7 +147,7 @@ private:
 
 	// Ship Shield
 	const int shieldRadius = 45;
-	const D3DCOLOR shieldColor = D3DCOLOR_XRGB(0, 255, 0);
+	const Color shieldColor = GREEN;
 
 
 	//linear movement

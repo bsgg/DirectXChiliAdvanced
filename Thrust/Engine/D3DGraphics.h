@@ -30,23 +30,23 @@ class D3DGraphics: public DrawTarget
 public:
 	D3DGraphics( HWND hWnd );
 	~D3DGraphics();
-	void PutPixel( int x,int y,D3DCOLOR c );
-	D3DCOLOR GetPixel( int x,int y ) const;
-	inline void DrawLine( Vec2 pt1,Vec2 pt2,D3DCOLOR c ) 
+	void PutPixel( int x,int y,Color c );
+	Color GetPixel( int x,int y ) const;
+	inline void DrawLine( Vec2 pt1,Vec2 pt2,Color c ) 
 	{
 		DrawLine( (int)pt1.x,(int)pt1.y,(int)pt2.x,(int)pt2.y,c );
 	}
-	void DrawLine( int x1,int y1,int x2,int y2,D3DCOLOR c );
-	void DrawLineClip(Vec2 p0, Vec2 p1, D3DCOLOR c, const RectF& clip);
+	void DrawLine( int x1,int y1,int x2,int y2,Color c );
+	void DrawLineClip(Vec2 p0, Vec2 p1, Color c, const RectF& clip);
 
 	// Add DrawCircle template function to use any kind of vector
 	template<typename T>
-	inline void DrawCircle(_Vec2<T> center, int radius, D3DCOLOR c)
+	inline void DrawCircle(_Vec2<T> center, int radius, Color c)
 	{
 		DrawCircle((int)center.x, (int)center.y, radius, c);
 	}
-	void DrawCircle( int centerX,int centerY,int radius,D3DCOLOR c );
-	void DrawTriangle(Vec2 v0, Vec2 v1, Vec2 v2, const RectI& clip, D3DCOLOR c);
+	void DrawCircle( int centerX,int centerY,int radius,Color c );
+	void DrawTriangle(Vec2 v0, Vec2 v1, Vec2 v2, const RectI& clip, Color c);
 	
 
 	void BeginFrame();
@@ -63,14 +63,14 @@ private:
 	// Draw a triangle with the bottom or the top flat (y0 == y1)
 	// yStart, yEnd: points in the triangle between the flat part and the other point
 	// m0, m1 = slope
-	void DrawFlatTriangle(float y0, float y1, float m0, float b0, float m1, float b1, const RectI& clip, D3DCOLOR c);
+	void DrawFlatTriangle(float y0, float y1, float m0, float b0, float m1, float b1, const RectI& clip, Color c);
 public:
 	static const unsigned int	SCREENWIDTH =	800;
 	static const unsigned int	SCREENHEIGHT =	600;
 private:
-	const D3DCOLOR		FILLVALUE =		BLACK;
+	const Color		FILLVALUE =		BLACK;
 	IDirect3D9*			pDirect3D;
 	IDirect3DDevice9*	pDevice;
 	IDirect3DSurface9*	pBackBuffer;
-	D3DCOLOR*			pSysBuffer;
+	Color*			pSysBuffer;
 };

@@ -99,7 +99,7 @@ public:
 	};
 
 public:
-	PolyClosed(std::initializer_list<Vec2> vList, D3DCOLOR color = WHITE)
+	PolyClosed(std::initializer_list<Vec2> vList, Color color = WHITE)
 		:
 		vertices(vList),
 		color (color)
@@ -108,7 +108,7 @@ public:
 		// Make the vertices clockwise
 		MakeClockWise();	
 	}
-	PolyClosed(std::string filename, D3DCOLOR color = WHITE)
+	PolyClosed(std::string filename, Color color = WHITE)
 		:
 		// instead of copy a vector from 1 to this one, just move it, it´s faster and better
 		vertices( Loader(filename) ),
@@ -325,7 +325,7 @@ private:
 	}
 
 private:
-	D3DCOLOR color;
+	Color color;
 	std::vector<Vec2> vertices;
 	
 
