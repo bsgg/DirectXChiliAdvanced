@@ -24,6 +24,7 @@
 #include "Vec2.h"
 #include "Colors.h"
 #include "DrawTarget.h"
+#include "Surface.h"
 
 class D3DGraphics: public DrawTarget
 {
@@ -31,6 +32,7 @@ public:
 	D3DGraphics( HWND hWnd );
 	~D3DGraphics();
 	void PutPixel( int x,int y,Color c );
+	void PutPixelAlpha(int x, int y, Color c);
 	Color GetPixel( int x,int y ) const;
 	inline void DrawLine( Vec2 pt1,Vec2 pt2,Color c ) 
 	{
@@ -72,5 +74,6 @@ private:
 	IDirect3D9*			pDirect3D;
 	IDirect3DDevice9*	pDevice;
 	IDirect3DSurface9*	pBackBuffer;
-	Color*			pSysBuffer;
+	Surface			    sysBuffer;
+
 };

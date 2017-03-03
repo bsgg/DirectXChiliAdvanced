@@ -29,7 +29,7 @@ D3DGraphics::D3DGraphics( HWND hWnd )
 pDirect3D( NULL ),
 pDevice( NULL ),
 pBackBuffer( NULL ),
-pSysBuffer( NULL )
+sysBuffer( SCREENWIDTH, SCREENHEIGHT )
 {
 	HRESULT result;
 	
@@ -50,8 +50,6 @@ pSysBuffer( NULL )
 
 	result = pDevice->GetBackBuffer( 0,0,D3DBACKBUFFER_TYPE_MONO,&pBackBuffer );
 	assert( !FAILED( result ) );
-
-	pSysBuffer = new Color[ SCREENWIDTH * SCREENHEIGHT ];
 }
 
 D3DGraphics::~D3DGraphics()
@@ -71,16 +69,11 @@ D3DGraphics::~D3DGraphics()
 		pBackBuffer->Release();
 		pBackBuffer = NULL;
 	}
-	if( pSysBuffer )
-	{
-		delete pSysBuffer;
-		pSysBuffer = NULL;
-	}
 }
 
 void D3DGraphics::BeginFrame()
 {
-	memset( pSysBuffer,FILLVALUE,sizeof(Color)* SCREENWIDTH * SCREENHEIGHT );
+	sysBuffer.Clear(FILLVALUE);
 }
 
 void D3DGraphics::EndFrame()
@@ -91,10 +84,7 @@ void D3DGraphics::EndFrame()
 	result = pBackBuffer->LockRect( &backRect,NULL,NULL );
 	assert( !FAILED( result ) );
 
-	for( int y = 0; y < SCREENHEIGHT; y++ )
-	{
-		memcpy( &((BYTE*)backRect.pBits)[backRect.Pitch * y],&pSysBuffer[SCREENWIDTH * y],sizeof(Color)* SCREENWIDTH );
-	}
+	sysBuffer.Present(backRect.Pitch, (BYTE*)backRect.pBits);
 
 	result = pBackBuffer->UnlockRect( );
 	assert( !FAILED( result ) );
@@ -105,20 +95,26 @@ void D3DGraphics::EndFrame()
 
 void D3DGraphics::PutPixel( int x,int y,Color c )
 {	
-	assert( x >= 0 );
-	assert( y >= 0 );
-	assert( x < SCREENWIDTH );
-	assert( y < SCREENHEIGHT );
-	pSysBuffer[ x + SCREENWIDTH * y ] = c;
+	sysBuffer.PutPixel(x, y, c);
+}
+
+void D3DGraphics::PutPixelAlpha( int x,int y,Color c )
+{
+	// load source pixel
+	const Color d = GetPixel( x,y );
+
+	// blend channels
+	const unsigned char rsltRed = ( c.r * c.x + d.r * ( 255 - c.x ) ) / 255;
+	const unsigned char rsltGreen = ( c.g * c.x + d.g * ( 255 - c.x ) ) / 255;
+	const unsigned char rsltBlue = ( c.b * c.x + d.b * ( 255 - c.x ) ) / 255;
+
+	// pack channels back into pixel and fire pixel onto backbuffer
+	PutPixel(x, y, { rsltRed ,rsltGreen, rsltBlue });
 }
 
 Color D3DGraphics::GetPixel( int x,int y ) const
 {
-	assert( x >= 0 );
-	assert( y >= 0 );
-	assert( x < SCREENWIDTH );
-	assert( y < SCREENHEIGHT );
-	return pSysBuffer[ x + SCREENWIDTH * y ];
+	return sysBuffer.GetPixel(x,y);
 }
 
 void D3DGraphics::DrawLine( int x1,int y1,int x2,int y2,Color c )
