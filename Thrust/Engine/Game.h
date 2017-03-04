@@ -34,6 +34,8 @@
 #include "Map.h"
 #include "Ship.h"
 
+#include "Surface.h"
+
 class Game
 {
 public:
@@ -63,5 +65,8 @@ private:
 	Camera cam;	
 	Ship ship;
 	Map map;
+
+	Surface image;
+	float scale = 1.0f;
 
 };

@@ -34,6 +34,9 @@ public:
 	void PutPixel( int x,int y,Color c );
 	void PutPixelAlpha(int x, int y, Color c);
 	Color GetPixel( int x,int y ) const;
+
+	void TransBlt(const Surface& surf, const Mat3& trans);
+
 	inline void DrawLine( Vec2 pt1,Vec2 pt2,Color c ) 
 	{
 		DrawLine( (int)pt1.x,(int)pt1.y,(int)pt2.x,(int)pt2.y,c );

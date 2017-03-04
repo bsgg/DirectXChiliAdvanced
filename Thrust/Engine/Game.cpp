@@ -32,7 +32,8 @@ Game::Game( HWND hWnd,KeyboardServer& kServer,MouseServer& mServer )
 	cam(view,view.GetWidth(), view.GetHeight() ),
 	//ship("shipd.dxf",{D3DGraphics::SCREENWIDTH / 2.0f, D3DGraphics::SCREENHEIGHT / 2.0f}),
 	ship("shipd.dxf", { -2026.0f, 226.0f }),
-	map("map.dxf")
+	map("map.dxf"),
+	image(Surface::FromFile(L"USS Turgidity.png"))
 {
 }
 
@@ -66,8 +67,8 @@ void Game::UpdateModel( )
 	const float deltaTime = 1.0f / 60.0f;
 #endif
 
-	ship.Update(deltaTime);
-	map.HandleCollision(ship);
+	/*ship.Update(deltaTime);
+	map.HandleCollision(ship);*/
 }
 
 void Game::HandleInput()
@@ -109,7 +110,7 @@ void Game::HandleInput()
 	}
 
 	// Mouse handle
-	/*angle -= 0.1f;
+	//angle -= 0.1f;
 	switch (mouse.ReadMouse().GetType())
 	{
 	case MouseEvent::WheelUp:
@@ -119,12 +120,23 @@ void Game::HandleInput()
 	case MouseEvent::WheelDown:
 	scale /= 1.13;
 	break;
-	}*/
+	}
 
 }
 
 void Game::ComposeFrame()
 {
+
+	// Ship game
+	// Focus the ship (move the camera where the ship is)
+	/*ship.FocusOn(cam);
+
+	// Draw camera
+	cam.Draw(map.GetDrawable());
+	cam.Draw(ship.GetDrawable());*/
+
+
+
 	/*PolyClosed::Drawable d = model.GetDrawable();
 	d.Transform(Mat3::Traslation({ (float)mouse.GetMouseX(), (float)mouse.GetMouseY() }) *
 		Mat3::Rotation(angle) * Mat3::Scaling(scale));
@@ -146,13 +158,6 @@ void Game::ComposeFrame()
 	gfx.DrawTriangle(v2, v3, m, clip, PURPLE);*/
 
 	
-	// Ship game
-	// Focus the ship (move the camera where the ship is)
-	ship.FocusOn(cam);
-
-	// Draw camera
-	cam.Draw(map.GetDrawable());
-	cam.Draw(ship.GetDrawable());	
 
 
 	// Test triangle list
@@ -161,5 +166,10 @@ void Game::ComposeFrame()
 	/*PolyClosed p({ {50.0f,50.0f}, {100.0f,50.0f}, {100.0f,100.0f }, {50.0f,100.0f} });
 	TriangleStrip strip(p.ExtractStripVertices(10.0f));
 	view.Draw(strip.GetDrawable());*/
+
+	const float toRadians = 2 * PI;
+	const Mat3 trans = Mat3::Traslation({ 400.0f, 300.0f }) * Mat3::Scaling(scale) * 
+		Mat3::Rotation(toRadians * (float(mouse.GetMouseX()) / 800.0f));
+	gfx.TransBlt(image, trans);
 
 }
