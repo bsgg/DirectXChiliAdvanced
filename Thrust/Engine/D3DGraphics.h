@@ -25,6 +25,7 @@
 #include "Colors.h"
 #include "DrawTarget.h"
 #include "Surface.h"
+#include "Vertex.h"
 
 class D3DGraphics: public DrawTarget
 {
@@ -35,7 +36,7 @@ public:
 	void PutPixelAlpha(int x, int y, Color c);
 	Color GetPixel( int x,int y ) const;
 
-	void TransBlt(const Surface& surf, const Mat3& trans);
+	
 
 	inline void DrawLine( Vec2 pt1,Vec2 pt2,Color c ) 
 	{
@@ -52,7 +53,8 @@ public:
 	}
 	void DrawCircle( int centerX,int centerY,int radius,Color c );
 	void DrawTriangle(Vec2 v0, Vec2 v1, Vec2 v2, const RectI& clip, Color c);
-	
+	//void TransBlt(const Surface& surf, const Mat3& trans);
+	void DrawTriangleTex(Vertex v0, Vertex v1, Vertex v2, const RectI& clip,const Surface& text);
 
 	void BeginFrame();
 	void EndFrame();
@@ -64,11 +66,15 @@ public:
 		object.Rasterize(*this);
 	}
 
-private:
+private:	
+
+	void DrawFlatTopTriangleTex(Vertex v0, Vertex v1, Vertex v2, const RectI& clip, const Surface& text);
+	void DrawFlatBottomTriangleTex(Vertex v0, Vertex v1, Vertex v2, const RectI& clip, const Surface& text);
 	// Draw a triangle with the bottom or the top flat (y0 == y1)
 	// yStart, yEnd: points in the triangle between the flat part and the other point
 	// m0, m1 = slope
 	void DrawFlatTriangle(float y0, float y1, float m0, float b0, float m1, float b1, const RectI& clip, Color c);
+
 public:
 	static const unsigned int	SCREENWIDTH =	800;
 	static const unsigned int	SCREENHEIGHT =	600;

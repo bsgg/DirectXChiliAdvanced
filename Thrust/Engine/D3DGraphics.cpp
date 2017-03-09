@@ -113,8 +113,10 @@ void D3DGraphics::PutPixelAlpha( int x,int y,Color c )
 	PutPixel(x, y, { rsltRed ,rsltGreen, rsltBlue });
 }
 
+
+
 // Transformation applied to a surface
-void D3DGraphics::TransBlt(const Surface& surf, const Mat3& trans)
+/*void D3DGraphics::TransBlt(const Surface& surf, const Mat3& trans)
 {
 	
 	unsigned int width = surf.GetWidth();
@@ -137,7 +139,7 @@ void D3DGraphics::TransBlt(const Surface& surf, const Mat3& trans)
 			}
 		}
 	}
-}
+}*/
 
 
 Color D3DGraphics::GetPixel( int x,int y ) const
@@ -388,4 +390,44 @@ void D3DGraphics::DrawFlatTriangle(float y0, float y1, float m0, float b0, float
 			PutPixel(x, y, c);
 		}
 	}
+}
+
+
+
+void D3DGraphics::DrawTriangleTex(Vertex v0, Vertex v1, Vertex v2, const RectI& clip, const Surface& text)
+{
+	// Sort vertices, to have v0 v1 and v2 from top to bottom
+	if (v1.v.y < v0.v.y) { v0.Swap(v1); }
+	if (v2.v.y < v1.v.y) { v1.Swap(v2); }
+	if (v1.v.y < v0.v.y) { v0.Swap(v1); }
+
+	// Check type triangle
+
+	// Check if if a top flat or bottom flat or anything else
+	if (v0.v.y == v1.v.y)
+	{
+		// Draw flat top triangle
+		if (v1.v.x < v0.v.x) v0.Swap(v1);
+		DrawFlatTopTriangleTex(v0,v1,v2,clip,text);
+
+	}
+	else if (v1.v.y == v2.v.y)
+	{
+		// Draw flat bottom triangle
+		if (v2.v.x < v1.v.x) v1.Swap(v2);
+		DrawFlatBottomTriangleTex(v0, v1, v2, clip, text);
+	}
+	else
+	{
+
+	}
+
+}
+void D3DGraphics::DrawFlatTopTriangleTex(Vertex v0, Vertex v1, Vertex v2, const RectI& clip, const Surface& text)
+{
+
+}
+void D3DGraphics::DrawFlatBottomTriangleTex(Vertex v0, Vertex v1, Vertex v2, const RectI& clip, const Surface& text)
+{
+
 }
