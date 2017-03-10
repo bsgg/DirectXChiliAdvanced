@@ -419,7 +419,15 @@ void D3DGraphics::DrawTriangleTex(Vertex v0, Vertex v1, Vertex v2, const RectI& 
 	}
 	else
 	{
+		// Screen space, Calculate intermediate vertex point on major segment
+		const Vec2 v = { ((v2.v.x - v0.v.x) / (v2.v.y - v0.v.y)) *
+						(v1.v.y - v0.v.y) + v0.v.x, v1.v.y };
+		
+		// Calculate uv coordinates for intermediate vertex point
+		const Vec2 t = v0.t + (v2.t - v0.t) * ((v.y - v0.v.y) / (v2.v.y - v0.v.y));
 
+		// Compose intermediate vertex
+		const Vertex vi = { v,t };
 	}
 
 }
