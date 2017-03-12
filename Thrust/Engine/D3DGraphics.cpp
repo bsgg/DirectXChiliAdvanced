@@ -428,6 +428,19 @@ void D3DGraphics::DrawTriangleTex(Vertex v0, Vertex v1, Vertex v2, const RectI& 
 
 		// Compose intermediate vertex
 		const Vertex vi = { v,t };
+
+		// If major right
+		if (v1.v.x < vi.v.x)
+		{
+			DrawFlatBottomTriangleTex(v0, v1, vi, clip, text);
+			DrawFlatTopTriangleTex(v1, vi, v2, clip, text);
+		}
+		else
+		{
+			DrawFlatBottomTriangleTex(v0, vi, v1, clip, text);
+			DrawFlatTopTriangleTex(vi, v1, v2, clip, text);
+		}
+
 	}
 
 }
