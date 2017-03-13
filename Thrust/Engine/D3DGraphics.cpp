@@ -447,12 +447,33 @@ void D3DGraphics::DrawTriangleTex(Vertex v0, Vertex v1, Vertex v2, const RectI& 
 void D3DGraphics::DrawFlatTopTriangleTex(Vertex v0, Vertex v1, Vertex v2, const RectI& clip, const Surface& text)
 {
 	// Calculate slopes
-	const float m1 = (v2.v.x - v0.v.x) / (v2.v.y -v0.v.y);
-	const float m2 = (v2.v.x - v1.v.x) / (v2.v.y - v1.v.y);
+	const float m0 = (v2.v.x - v0.v.x) / (v2.v.y -v0.v.y);
+	const float m1 = (v2.v.x - v1.v.x) / (v2.v.y - v1.v.y);
 
 	// Calculates start and end scanlines
 	const int yStart = max((int)ceil(v0.v.y), clip.top);
 	const int yEnd = min((int)ceil(v2.v.y) - 1, clip.bottom);
+
+	// Calculate uv edge unit steps
+	const Vec2 tEdgeStepL = (v2.t - v0.t) / (v2.v.y - v0.v.y);
+	const Vec2 tEdgeStepR = (v2.t - v1.t) / (v2.v.y - v0.v.y);
+
+	// Calculate uv edge prestep
+	Vec2 tEdgeL = v1.t + tEdgeStepL * (float (yStart) - v1.v.y);
+	Vec2 tEdgeR = v2.t + tEdgeStepR * (float (yStart) - v1.v.y);
+
+	for (int y = yStart; y <= yEnd; y++,
+		tEdgeL += tEdgeStepL, tEdgeR += tEdgeStepR)
+	{
+		// Calculate start and end points
+		const float px0 = m0 * (float (y) - v0.v.y) + v0.v.x;
+		const float px1 = m1 * (float(y) - v0.v.y) + v1.v.x;
+
+		// Calculate start and end pixels
+		const int x0 = max((int)ceil(px0), clip.left);
+		const int x1 = min((int)ceil(px1) - 1, clip.right);
+	}
+
 
 }
 void D3DGraphics::DrawFlatBottomTriangleTex(Vertex v0, Vertex v1, Vertex v2, const RectI& clip, const Surface& text)
