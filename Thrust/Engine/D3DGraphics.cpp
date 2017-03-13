@@ -446,6 +446,13 @@ void D3DGraphics::DrawTriangleTex(Vertex v0, Vertex v1, Vertex v2, const RectI& 
 }
 void D3DGraphics::DrawFlatTopTriangleTex(Vertex v0, Vertex v1, Vertex v2, const RectI& clip, const Surface& text)
 {
+	// Calculate slopes
+	const float m1 = (v2.v.x - v0.v.x) / (v2.v.y -v0.v.y);
+	const float m2 = (v2.v.x - v1.v.x) / (v2.v.y - v1.v.y);
+
+	// Calculates start and end scanlines
+	const int yStart = max((int)ceil(v0.v.y), clip.top);
+	const int yEnd = min((int)ceil(v2.v.y) - 1, clip.bottom);
 
 }
 void D3DGraphics::DrawFlatBottomTriangleTex(Vertex v0, Vertex v1, Vertex v2, const RectI& clip, const Surface& text)
