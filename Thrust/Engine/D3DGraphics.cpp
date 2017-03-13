@@ -459,24 +459,74 @@ void D3DGraphics::DrawFlatTopTriangleTex(Vertex v0, Vertex v1, Vertex v2, const 
 	const Vec2 tEdgeStepR = (v2.t - v1.t) / (v2.v.y - v0.v.y);
 
 	// Calculate uv edge prestep
-	Vec2 tEdgeL = v1.t + tEdgeStepL * (float (yStart) - v1.v.y);
-	Vec2 tEdgeR = v2.t + tEdgeStepR * (float (yStart) - v1.v.y);
+	Vec2 tEdgeL = v1.t + tEdgeStepL * (float (yStart) - v0.v.y);
+	Vec2 tEdgeR = v2.t + tEdgeStepR * (float (yStart) - v0.v.y);
 
 	for (int y = yStart; y <= yEnd; y++,
 		tEdgeL += tEdgeStepL, tEdgeR += tEdgeStepR)
 	{
 		// Calculate start and end points
 		const float px0 = m0 * (float (y) - v0.v.y) + v0.v.x;
-		const float px1 = m1 * (float(y) - v0.v.y) + v1.v.x;
+		const float px1 = m1 * (float(y) - v1.v.y) + v1.v.x;
 
 		// Calculate start and end pixels
 		const int x0 = max((int)ceil(px0), clip.left);
 		const int x1 = min((int)ceil(px1) - 1, clip.right);
+
+		// Calculate uv scaline step
+		const Vec2 tScanStep = (tEdgeR - tEdgeL) / (px1 - px0);
+
+		// Calculate uv point prestep
+		Vec2 t = tEdgeL + tScanStep * (float (x0) - px0);
+
+		// Draw the pixels from the texture (texels)
+		for (int x = x0; x < x1; x++, t += tScanStep)
+		{
+			PutPixel(x, y, text.GetPixel(unsigned int (t.x + 0.5f), unsigned int (t.y + 0.5f)));
+		}
+
 	}
-
-
 }
 void D3DGraphics::DrawFlatBottomTriangleTex(Vertex v0, Vertex v1, Vertex v2, const RectI& clip, const Surface& text)
 {
+	// Calculate slopes
+	const float m0 = (v1.v.x - v0.v.x) / (v1.v.y - v0.v.y);
+	const float m1 = (v2.v.x - v0.v.x) / (v2.v.y - v0.v.y);
 
+	// Calculates start and end scanlines
+	const int yStart = max((int)ceil(v0.v.y), clip.top);
+	const int yEnd = min((int)ceil(v2.v.y) - 1, clip.bottom);
+
+	// Calculate uv edge unit steps
+	const Vec2 tEdgeStepL = (v1.t - v0.t) / (v1.v.y - v0.v.y);
+	const Vec2 tEdgeStepR = (v2.t - v0.t) / (v1.v.y - v0.v.y);
+
+	// Calculate uv edge prestep
+	Vec2 tEdgeL = v1.t + tEdgeStepL * (float(yStart) - v0.v.y);
+	Vec2 tEdgeR = v2.t + tEdgeStepR * (float(yStart) - v0.v.y);
+
+	for (int y = yStart; y <= yEnd; y++,
+		tEdgeL += tEdgeStepL, tEdgeR += tEdgeStepR)
+	{
+		// Calculate start and end points
+		const float px0 = m0 * (float(y) - v0.v.y) + v0.v.x;
+		const float px1 = m1 * (float(y) - v0.v.y) + v0.v.x;
+
+		// Calculate start and end pixels
+		const int x0 = max((int)ceil(px0), clip.left);
+		const int x1 = min((int)ceil(px1) - 1, clip.right);
+
+		// Calculate uv scaline step
+		const Vec2 tScanStep = (tEdgeR - tEdgeL) / (px1 - px0);
+
+		// Calculate uv point prestep
+		Vec2 t = tEdgeL + tScanStep * (float(x0) - px0);
+
+		// Draw the pixels from the texture (texels)
+		for (int x = x0; x < x1; x++, t += tScanStep)
+		{
+			PutPixel(x, y, text.GetPixel(unsigned int(t.x + 0.5f), unsigned int(t.y + 0.5f)));
+		}
+
+	}
 }

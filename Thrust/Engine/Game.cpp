@@ -170,6 +170,13 @@ void Game::ComposeFrame()
 	const float toRadians = 2 * PI;
 	const Mat3 trans = Mat3::Traslation({ 400.0f, 300.0f }) * Mat3::Scaling(scale) * 
 		Mat3::Rotation(toRadians * (float(mouse.GetMouseX()) / 800.0f));
-	gfx.TransBlt(image, trans);
+
+	const Vertex v0 = { { -80.0f, -135.0f}, { 0.0f,0.0f} };
+	const Vertex v1 = { {  80.0f, -135.0f },{ 159.0f,0.0f } };
+	const Vertex v2 = { {  80.0f,  135.0f },{ 159.0f,269.0f } };
+	const Vertex v3 = { { -80.0f, 135.0f },{ 0.0f,269.0f } };
+	//gfx.DrawTriangleTex();
+
+	//gfx.TransBlt(image, trans);
 
 }
