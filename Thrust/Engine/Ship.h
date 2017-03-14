@@ -1,5 +1,7 @@
 #pragma once
 
+#include <array>
+#include "Vertex.h"
 #include "PolyClosed.h"
 #include "Camera.h"
 #include "CollidableCircle.h"
@@ -19,10 +21,20 @@ public:
 			Transform(Mat3::Traslation(parent.pos) * Mat3::Rotation(parent.angle));
 		}
 		virtual void Rasterize(D3DGraphics & gfx) const override
-		{			
-			PolyClosed::Drawable drawableM = parent.model.GetDrawable();
-			drawableM.Transform(trans);
-			gfx.Draw(drawableM);
+		{
+			std::array<Vertex, 4> quadTrans;
+			for (int i = 0; i < 4; i++)
+			{
+				quadTrans[i].t = parent.quad[i].t;
+				quadTrans[i].v = trans *  parent.quad[i].v;
+			}
+
+			gfx.DrawTriangleTex(quadTrans[0], quadTrans[1], quadTrans[3],
+				clip, parent.shipTexture);
+
+			gfx.DrawTriangleTex(quadTrans[1], quadTrans[2], quadTrans[3],
+				clip, parent.shipTexture);
+
 
 			// Transform the shield position from model position to world position
 			// The center of the shield will be the center of the model (local position = 0,0)
@@ -36,8 +48,21 @@ public:
 
 	Ship(std::string filename, Vec2 pos = { 0.0f,0.0f })
 		:pos (pos),
-		model( filename )
-	{}
+		shipTexture(Surface::FromFile(L"USS Turgidity.png"))
+	{
+		std::array<Vertex, 4> quad;
+		quad[0].v = { -80.0f, -135.0f };
+		quad[0].t = { 0.0f,0.0f };
+
+		quad[1].v = { 79.0f, -135.0f };
+		quad[1].t = { 159.0f,0.0f };
+
+		quad[2].v = { 79.0f,  134.0f };
+		quad[2].t = { 159.0f,269.0f };
+
+		quad[3].v = { -80.0f, 134.0f };
+		quad[3].t = { 0.0f, 269.0f };
+	}
 
 	Drawable GetDrawable() const
 	{
@@ -143,10 +168,11 @@ public:
 private:
 
 	// Structure
-	PolyClosed model;
+	Surface shipTexture;
+	std::array<Vertex, 4> quad;
 
 	// Ship Shield
-	const int shieldRadius = 45;
+	const int shieldRadius = 160;
 	const Color shieldColor = GREEN;
 
 

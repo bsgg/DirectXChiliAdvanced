@@ -33,8 +33,7 @@ Game::Game( HWND hWnd,KeyboardServer& kServer,MouseServer& mServer )
 	cam(view,view.GetWidth(), view.GetHeight() ),
 	//ship("shipd.dxf",{D3DGraphics::SCREENWIDTH / 2.0f, D3DGraphics::SCREENHEIGHT / 2.0f}),
 	ship("shipd.dxf", { -2026.0f, 226.0f }),
-	map("map.dxf"),
-	image(Surface::FromFile(L"USS Turgidity.png"))
+	map("map.dxf")
 {
 }
 
@@ -68,8 +67,8 @@ void Game::UpdateModel( )
 	const float deltaTime = 1.0f / 60.0f;
 #endif
 
-	/*ship.Update(deltaTime);
-	map.HandleCollision(ship);*/
+	ship.Update(deltaTime);
+	map.HandleCollision(ship);
 }
 
 void Game::HandleInput()
@@ -130,11 +129,11 @@ void Game::ComposeFrame()
 
 	// Ship game
 	// Focus the ship (move the camera where the ship is)
-	/*ship.FocusOn(cam);
+	ship.FocusOn(cam);
 
 	// Draw camera
 	cam.Draw(map.GetDrawable());
-	cam.Draw(ship.GetDrawable());*/
+	cam.Draw(ship.GetDrawable());
 
 
 
@@ -168,7 +167,7 @@ void Game::ComposeFrame()
 	TriangleStrip strip(p.ExtractStripVertices(10.0f));
 	view.Draw(strip.GetDrawable());*/
 
-	const float toRadians = 2 * PI;
+	/*const float toRadians = 2 * PI;
 	const Mat3 trans = Mat3::Traslation({ 400.0f, 300.0f }) * Mat3::Scaling(scale) * 
 		Mat3::Rotation(toRadians * (float(mouse.GetMouseX()) / 800.0f));
 
@@ -198,7 +197,7 @@ void Game::ComposeFrame()
 
 	gfx.DrawTriangleTex(quadTrans[1], quadTrans[2], quadTrans[3],
 	{ 0,D3DGraphics::SCREENHEIGHT - 1 , 0,D3DGraphics::SCREENWIDTH - 1 }, image);
-
+	*/
 
 	//gfx.TransBlt(image, trans);
 

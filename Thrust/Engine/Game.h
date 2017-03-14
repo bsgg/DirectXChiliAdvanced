@@ -66,7 +66,6 @@ private:
 	Ship ship;
 	Map map;
 
-	Surface image;
 	float scale = 1.0f;
 
 };
