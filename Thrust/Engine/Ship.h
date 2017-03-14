@@ -23,10 +23,12 @@ public:
 		virtual void Rasterize(D3DGraphics & gfx) const override
 		{
 			std::array<Vertex, 4> quadTrans;
+			const Mat3 shipTrans = trans * Mat3::Traslation(-parent.shipCenter)
+				* Mat3::Scaling(parent.shipScale);
 			for (int i = 0; i < 4; i++)
 			{
 				quadTrans[i].t = parent.quad[i].t;
-				quadTrans[i].v = trans *  parent.quad[i].v;
+				quadTrans[i].v = shipTrans *  parent.quad[i].v;
 			}
 
 			gfx.DrawTriangleTex(quadTrans[0], quadTrans[1], quadTrans[3],
@@ -50,18 +52,14 @@ public:
 		:pos (pos),
 		shipTexture(Surface::FromFile(L"USS Turgidity.png"))
 	{
-		std::array<Vertex, 4> quad;
-		quad[0].v = { -80.0f, -135.0f };
+		quad[0].v = { -80,-135.0f };
 		quad[0].t = { 0.0f,0.0f };
-
-		quad[1].v = { 79.0f, -135.0f };
+		quad[1].v = { 79,-135.0f };
 		quad[1].t = { 159.0f,0.0f };
-
-		quad[2].v = { 79.0f,  134.0f };
+		quad[2].v = { 79,134.0f };
 		quad[2].t = { 159.0f,269.0f };
-
-		quad[3].v = { -80.0f, 134.0f };
-		quad[3].t = { 0.0f, 269.0f };
+		quad[3].v = { -80,134.0f };
+		quad[3].t = { 0.0f,269.0f };
 	}
 
 	Drawable GetDrawable() const
@@ -169,10 +167,12 @@ private:
 
 	// Structure
 	Surface shipTexture;
+	const float shipScale = 0.27f;
 	std::array<Vertex, 4> quad;
 
 	// Ship Shield
-	const int shieldRadius = 160;
+	const Vec2 shipCenter = { 0.0f,6.0f };
+	const int shieldRadius = 50;
 	const Color shieldColor = GREEN;
 
 

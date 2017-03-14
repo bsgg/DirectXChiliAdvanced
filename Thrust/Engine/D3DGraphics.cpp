@@ -114,34 +114,6 @@ void D3DGraphics::PutPixelAlpha( int x,int y,Color c )
 }
 
 
-
-// Transformation applied to a surface
-/*void D3DGraphics::TransBlt(const Surface& surf, const Mat3& trans)
-{
-	
-	unsigned int width = surf.GetWidth();
-	unsigned int height = surf.GetHeight();
-	const Vec2 center = { float(width)/2.0f, float(height)/2.0f };
-
-	for (unsigned int sy = 0; sy < height; sy++)
-	{
-		for (unsigned int sx = 0; sx < width; sx++)
-		{
-			// Transform each vertex into the center
-			const Vec2 srcPt = Vec2{ float(sx), float(sy) } - center;
-			// Transform the vertex with the transformation matrix
-			const Vec2 dstPt = trans * srcPt;
-
-			if (dstPt.IsInsideRect( { 0.0f,0.0f }, { SCREENWIDTH - 1, SCREENHEIGHT - 1 } ) )
-			{
-				// Draw this pixel
-				PutPixel(int(dstPt.x), int(dstPt.y), surf.GetPixel(sx, sy));
-			}
-		}
-	}
-}*/
-
-
 Color D3DGraphics::GetPixel( int x,int y ) const
 {
 	return sysBuffer.GetPixel(x,y);

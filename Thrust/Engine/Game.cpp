@@ -198,7 +198,4 @@ void Game::ComposeFrame()
 	gfx.DrawTriangleTex(quadTrans[1], quadTrans[2], quadTrans[3],
 	{ 0,D3DGraphics::SCREENHEIGHT - 1 , 0,D3DGraphics::SCREENWIDTH - 1 }, image);
 	*/
-
-	//gfx.TransBlt(image, trans);
-
 }
