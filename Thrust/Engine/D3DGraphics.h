@@ -54,7 +54,7 @@ public:
 	void DrawCircle( int centerX,int centerY,int radius,Color c );
 	void DrawTriangle(Vec2 v0, Vec2 v1, Vec2 v2, const RectI& clip, Color c);
 	//void TransBlt(const Surface& surf, const Mat3& trans);
-	void DrawTriangleTex(Vertex v0, Vertex v1, Vertex v2, const RectI& clip,const Surface& text);
+	void DrawTriangleTex(Vertex v0, Vertex v1, Vertex v2, const RectI& clip,const Surface& tex);
 
 	void BeginFrame();
 	void EndFrame();
@@ -68,8 +68,8 @@ public:
 
 private:	
 
-	void DrawFlatTopTriangleTex(Vertex v0, Vertex v1, Vertex v2, const RectI& clip, const Surface& text);
-	void DrawFlatBottomTriangleTex(Vertex v0, Vertex v1, Vertex v2, const RectI& clip, const Surface& text);
+	void DrawFlatTopTriangleTex(Vertex v0, Vertex v1, Vertex v2, const RectI& clip, const Surface& tex);
+	void DrawFlatBottomTriangleTex(Vertex v0, Vertex v1, Vertex v2, const RectI& clip, const Surface& tex);
 	// Draw a triangle with the bottom or the top flat (y0 == y1)
 	// yStart, yEnd: points in the triangle between the flat part and the other point
 	// m0, m1 = slope

@@ -394,34 +394,32 @@ void D3DGraphics::DrawFlatTriangle(float y0, float y1, float m0, float b0, float
 
 
 
-void D3DGraphics::DrawTriangleTex(Vertex v0, Vertex v1, Vertex v2, const RectI& clip, const Surface& text)
+void D3DGraphics::DrawTriangleTex(Vertex v0, Vertex v1, Vertex v2, const RectI& clip, const Surface& tex)
 {
 	// Sort vertices, to have v0 v1 and v2 from top to bottom
 	if (v1.v.y < v0.v.y) { v0.Swap(v1); }
 	if (v2.v.y < v1.v.y) { v1.Swap(v2); }
 	if (v1.v.y < v0.v.y) { v0.Swap(v1); }
 
-	// Check type triangle
-
 	// Check if if a top flat or bottom flat or anything else
 	if (v0.v.y == v1.v.y)
 	{
 		// Draw flat top triangle
 		if (v1.v.x < v0.v.x) v0.Swap(v1);
-		DrawFlatTopTriangleTex(v0,v1,v2,clip,text);
+		DrawFlatTopTriangleTex(v0, v1, v2, clip, tex);
 
 	}
 	else if (v1.v.y == v2.v.y)
 	{
 		// Draw flat bottom triangle
 		if (v2.v.x < v1.v.x) v1.Swap(v2);
-		DrawFlatBottomTriangleTex(v0, v1, v2, clip, text);
+		DrawFlatBottomTriangleTex(v0, v1, v2, clip, tex);
 	}
 	else
 	{
 		// Screen space, Calculate intermediate vertex point on major segment
 		const Vec2 v = { ((v2.v.x - v0.v.x) / (v2.v.y - v0.v.y)) *
-						(v1.v.y - v0.v.y) + v0.v.x, v1.v.y };
+			(v1.v.y - v0.v.y) + v0.v.x, v1.v.y };
 		
 		// Calculate uv coordinates for intermediate vertex point
 		const Vec2 t = v0.t + (v2.t - v0.t) * ((v.y - v0.v.y) / (v2.v.y - v0.v.y));
@@ -432,70 +430,74 @@ void D3DGraphics::DrawTriangleTex(Vertex v0, Vertex v1, Vertex v2, const RectI& 
 		// If major right
 		if (v1.v.x < vi.v.x)
 		{
-			DrawFlatBottomTriangleTex(v0, v1, vi, clip, text);
-			DrawFlatTopTriangleTex(v1, vi, v2, clip, text);
+			DrawFlatBottomTriangleTex(v0, v1, vi, clip, tex);
+			DrawFlatTopTriangleTex(v1, vi, v2, clip, tex);
 		}
 		else
 		{
-			DrawFlatBottomTriangleTex(v0, vi, v1, clip, text);
-			DrawFlatTopTriangleTex(vi, v1, v2, clip, text);
+			DrawFlatBottomTriangleTex(v0, vi, v1, clip, tex);
+			DrawFlatTopTriangleTex(vi, v1, v2, clip, tex);
 		}
 
 	}
 
 }
-void D3DGraphics::DrawFlatTopTriangleTex(Vertex v0, Vertex v1, Vertex v2, const RectI& clip, const Surface& text)
+void D3DGraphics::DrawFlatTopTriangleTex(Vertex v0, Vertex v1, Vertex v2, const RectI& clip, const Surface& tex)
 {
 	// Calculate slopes
-	const float m0 = (v2.v.x - v0.v.x) / (v2.v.y -v0.v.y);
-	const float m1 = (v2.v.x - v1.v.x) / (v2.v.y - v1.v.y);
+	float m0 = (v2.v.x - v0.v.x) / (v2.v.y - v0.v.y);
+	float m1 = (v2.v.x - v1.v.x) / (v2.v.y - v1.v.y);
 
 	// Calculates start and end scanlines
-	const int yStart = max((int)ceil(v0.v.y), clip.top);
-	const int yEnd = min((int)ceil(v2.v.y) - 1, clip.bottom);
+	const int yStart = max((int)ceilf(v0.v.y), clip.top);
+	const int yEnd = min((int)ceilf(v2.v.y) - 1, clip.bottom);
 
 	// Calculate uv edge unit steps
 	const Vec2 tEdgeStepL = (v2.t - v0.t) / (v2.v.y - v0.v.y);
 	const Vec2 tEdgeStepR = (v2.t - v1.t) / (v2.v.y - v0.v.y);
 
 	// Calculate uv edge prestep
-	Vec2 tEdgeL = v0.t + tEdgeStepL * (float (yStart) - v0.v.y);
-	Vec2 tEdgeR = v1.t + tEdgeStepR * (float (yStart) - v0.v.y);
+	Vec2 tEdgeL = v0.t + tEdgeStepL * (float(yStart) - v1.v.y);
+	Vec2 tEdgeR = v1.t + tEdgeStepR * (float(yStart) - v1.v.y);
 
-	for (int y = yStart; y <= yEnd; y++,
-		tEdgeL += tEdgeStepL, tEdgeR += tEdgeStepR)
+	for (int y = yStart; y <= yEnd; y++, tEdgeL += tEdgeStepL, tEdgeR += tEdgeStepR)
 	{
 		// Calculate start and end points
-		const float px0 = m0 * (float (y) - v0.v.y) + v0.v.x;
+		const float px0 = m0 * (float(y) - v0.v.y) + v0.v.x;
 		const float px1 = m1 * (float(y) - v1.v.y) + v1.v.x;
 
 		// Calculate start and end pixels
-		const int x0 = max((int)ceil(px0), clip.left);
-		const int x1 = min((int)ceil(px1) - 1, clip.right);
+		const int xStart = max((int)ceilf(px0), clip.left);
+		const int xEnd = min((int)ceilf(px1) - 1, clip.right);
 
 		// Calculate uv scaline step
 		const Vec2 tScanStep = (tEdgeR - tEdgeL) / (px1 - px0);
 
 		// Calculate uv point prestep
-		Vec2 t = tEdgeL + tScanStep * (float (x0) - px0);
+		Vec2 t = tEdgeL + tScanStep * (float(xStart) - px0);
 
 		// Draw the pixels from the texture (texels)
-		for (int x = x0; x < x1; x++, t += tScanStep)
+		for (int x = xStart; x <= xEnd; x++, t += tScanStep)
 		{
-			PutPixel(x, y, text.GetPixel(unsigned int (t.x + 0.5f), unsigned int (t.y + 0.5f)));
+			const Color texel = tex.GetPixel(
+				(unsigned int)(t.x + 0.5f), (unsigned int)(t.y + 0.5f));
+			if (texel.x == 255)
+			{
+				PutPixel(x, y, texel);
+			}
 		}
 
 	}
 }
-void D3DGraphics::DrawFlatBottomTriangleTex(Vertex v0, Vertex v1, Vertex v2, const RectI& clip, const Surface& text)
+void D3DGraphics::DrawFlatBottomTriangleTex(Vertex v0, Vertex v1, Vertex v2, const RectI& clip, const Surface& tex)
 {
 	// Calculate slopes
-	const float m0 = (v1.v.x - v0.v.x) / (v1.v.y - v0.v.y);
-	const float m1 = (v2.v.x - v0.v.x) / (v2.v.y - v0.v.y);
+	float m0 = (v1.v.x - v0.v.x) / (v1.v.y - v0.v.y);
+	float m1 = (v2.v.x - v0.v.x) / (v2.v.y - v0.v.y);
 
 	// Calculates start and end scanlines
-	const int yStart = max((int)ceil(v0.v.y), clip.top);
-	const int yEnd = min((int)ceil(v2.v.y) - 1, clip.bottom);
+	const int yStart = max((int)ceilf(v0.v.y), clip.top);
+	const int yEnd = min((int)ceilf(v2.v.y) - 1, clip.bottom);
 
 	// Calculate uv edge unit steps
 	const Vec2 tEdgeStepL = (v1.t - v0.t) / (v1.v.y - v0.v.y);
@@ -505,27 +507,31 @@ void D3DGraphics::DrawFlatBottomTriangleTex(Vertex v0, Vertex v1, Vertex v2, con
 	Vec2 tEdgeL = v0.t + tEdgeStepL * (float(yStart) - v0.v.y);
 	Vec2 tEdgeR = v0.t + tEdgeStepR * (float(yStart) - v0.v.y);
 
-	for (int y = yStart; y <= yEnd; y++,
-		tEdgeL += tEdgeStepL, tEdgeR += tEdgeStepR)
+	for (int y = yStart; y <= yEnd; y++, tEdgeL += tEdgeStepL, tEdgeR += tEdgeStepR)
 	{
 		// Calculate start and end points
 		const float px0 = m0 * (float(y) - v0.v.y) + v0.v.x;
 		const float px1 = m1 * (float(y) - v0.v.y) + v0.v.x;
 
 		// Calculate start and end pixels
-		const int x0 = max((int)ceil(px0), clip.left);
-		const int x1 = min((int)ceil(px1) - 1, clip.right);
+		const int xStart = max((int)ceilf(px0), clip.left);
+		const int xEnd = min((int)ceilf(px1) - 1, clip.right);
 
 		// Calculate uv scaline step
 		const Vec2 tScanStep = (tEdgeR - tEdgeL) / (px1 - px0);
 
 		// Calculate uv point prestep
-		Vec2 t = tEdgeL + tScanStep * (float(x0) - px0);
+		Vec2 t = tEdgeL + tScanStep * (float(xStart) - px0);
 
 		// Draw the pixels from the texture (texels)
-		for (int x = x0; x < x1; x++, t += tScanStep)
+		for (int x = xStart; x <= xEnd; x++, t += tScanStep)
 		{
-			PutPixel(x, y, text.GetPixel(unsigned int(t.x + 0.5f), unsigned int(t.y + 0.5f)));
+			const Color texel = tex.GetPixel(
+				(unsigned int)(t.x + 0.5f), (unsigned int)(t.y + 0.5f));
+			if (texel.x == 255)
+			{
+				PutPixel(x, y, texel);
+			}
 		}
 
 	}
