@@ -459,8 +459,8 @@ void D3DGraphics::DrawFlatTopTriangleTex(Vertex v0, Vertex v1, Vertex v2, const 
 	const Vec2 tEdgeStepR = (v2.t - v1.t) / (v2.v.y - v0.v.y);
 
 	// Calculate uv edge prestep
-	Vec2 tEdgeL = v1.t + tEdgeStepL * (float (yStart) - v0.v.y);
-	Vec2 tEdgeR = v2.t + tEdgeStepR * (float (yStart) - v0.v.y);
+	Vec2 tEdgeL = v0.t + tEdgeStepL * (float (yStart) - v0.v.y);
+	Vec2 tEdgeR = v1.t + tEdgeStepR * (float (yStart) - v0.v.y);
 
 	for (int y = yStart; y <= yEnd; y++,
 		tEdgeL += tEdgeStepL, tEdgeR += tEdgeStepR)
@@ -502,8 +502,8 @@ void D3DGraphics::DrawFlatBottomTriangleTex(Vertex v0, Vertex v1, Vertex v2, con
 	const Vec2 tEdgeStepR = (v2.t - v0.t) / (v1.v.y - v0.v.y);
 
 	// Calculate uv edge prestep
-	Vec2 tEdgeL = v1.t + tEdgeStepL * (float(yStart) - v0.v.y);
-	Vec2 tEdgeR = v2.t + tEdgeStepR * (float(yStart) - v0.v.y);
+	Vec2 tEdgeL = v0.t + tEdgeStepL * (float(yStart) - v0.v.y);
+	Vec2 tEdgeR = v0.t + tEdgeStepR * (float(yStart) - v0.v.y);
 
 	for (int y = yStart; y <= yEnd; y++,
 		tEdgeL += tEdgeStepL, tEdgeR += tEdgeStepR)

@@ -21,6 +21,7 @@
 #include "Game.h"
 #include "Mat3.h"
 #include "TriangleStrip.h"
+#include <array>
 
 
 Game::Game( HWND hWnd,KeyboardServer& kServer,MouseServer& mServer )
@@ -171,11 +172,33 @@ void Game::ComposeFrame()
 	const Mat3 trans = Mat3::Traslation({ 400.0f, 300.0f }) * Mat3::Scaling(scale) * 
 		Mat3::Rotation(toRadians * (float(mouse.GetMouseX()) / 800.0f));
 
-	const Vertex v0 = { { -80.0f, -135.0f}, { 0.0f,0.0f} };
-	const Vertex v1 = { {  80.0f, -135.0f },{ 159.0f,0.0f } };
-	const Vertex v2 = { {  80.0f,  135.0f },{ 159.0f,269.0f } };
-	const Vertex v3 = { { -80.0f, 135.0f },{ 0.0f,269.0f } };
-	//gfx.DrawTriangleTex();
+	const unsigned int numberVertex = 4;
+	std::array<Vertex, numberVertex> quad;
+	quad[0].v = { -80.0f, -135.0f };
+	quad[0].t = { 0.0f,0.0f };
+
+	quad[1].v = { 79.0f, -135.0f };
+	quad[1].t = { 159.0f,0.0f };
+
+	quad[2].v = { 79.0f,  134.0f };
+	quad[2].t = { 159.0f,269.0f };
+
+	quad[3].v = { -80.0f, 134.0f };
+	quad[3].t = { 0.0f, 269.0f };
+
+	std::array<Vertex, numberVertex> quadTrans;
+	for (int i = 0; i < numberVertex; i++)
+	{
+		quadTrans[i].t= quad[i].t;
+		quadTrans[i].v = trans * quad[i].v;
+	}
+
+	gfx.DrawTriangleTex(quadTrans[0], quadTrans[1], quadTrans[3], 
+		{0,D3DGraphics::SCREENHEIGHT -1 , 0,D3DGraphics::SCREENWIDTH -1 }, image);
+
+	gfx.DrawTriangleTex(quadTrans[1], quadTrans[2], quadTrans[3],
+	{ 0,D3DGraphics::SCREENHEIGHT - 1 , 0,D3DGraphics::SCREENWIDTH - 1 }, image);
+
 
 	//gfx.TransBlt(image, trans);
 
